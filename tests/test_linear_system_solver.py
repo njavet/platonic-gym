@@ -1,6 +1,6 @@
 import unittest
 import numpy as np
-import numerical_mathematics
+import numerical_mathematics.lu
 
 
 class Gauss(unittest.TestCase):
@@ -11,12 +11,17 @@ class Gauss(unittest.TestCase):
         A = np.array([1, 5, 6, 7, 9, 6, 2, 3, 4], dtype=np.float64).reshape(3, 3)
         b = np.array([29, 43, 20], dtype=np.float64)
         x_true = np.linalg.solve(A, b)
+        x = numerical_mathematics.lu.solve_linear_system(A, b)
+        # flops rounding errors
+        self.assertTrue(np.all(np.isclose(x, x_true)))
 
     def test_3x3_matrix_1(self):
         A = np.array([-1, 1, 1, 1, -3, -2, 5, 1, 4],
                      dtype=np.float64).reshape(3, 3)
         b = np.array([0, 5, 3], dtype=np.float64)
         x_true = np.linalg.solve(A, b)
+        x = numerical_mathematics.lu.solve_linear_system(A, b)
+        self.assertTrue(np.all(np.isclose(x, x_true)))
 
     def test_3x3_matrix_2(self):
         A = np.array([4, -1, -5, -12, 4, 17, 32, -10, -41], 
@@ -25,6 +30,10 @@ class Gauss(unittest.TestCase):
         b1 = np.array([6, -12, 48], dtype=np.float64)
         x_true_0 = np.linalg.solve(A, b0)
         x_true_1 = np.linalg.solve(A, b1)
+        x0 = numerical_mathematics.lu.solve_linear_system(A, b0)
+        x1 = numerical_mathematics.lu.solve_linear_system(A, b1)
+        self.assertTrue(np.all(np.isclose(x0, x_true_0)))
+        self.assertTrue(np.all(np.isclose(x1, x_true_1)))
 
     def test_3x3_matrix_3(self):
         A = np.array([2, 7, 3, -4, -10, 0, 12, 34, 9],
@@ -33,6 +42,10 @@ class Gauss(unittest.TestCase):
         b1 = np.array([5, -22, 42], dtype=np.float64)
         x_true_0 = np.linalg.solve(A, b0)
         x_true_1 = np.linalg.solve(A, b1)
+        x0 = numerical_mathematics.lu.solve_linear_system(A, b0)
+        x1 = numerical_mathematics.lu.solve_linear_system(A, b1)
+        self.assertTrue(np.all(np.isclose(x0, x_true_0)))
+        self.assertTrue(np.all(np.isclose(x1, x_true_1)))
 
     def test_3x3_matrix_4(self):
         A = np.array([-2, 5, 4, -14, 38, 22, 6, -9, -27],
@@ -41,6 +54,10 @@ class Gauss(unittest.TestCase):
         b1 = np.array([16, 82, -120], dtype=np.float64)
         x_true_0 = np.linalg.solve(A, b0)
         x_true_1 = np.linalg.solve(A, b1)
+        x0 = numerical_mathematics.lu.solve_linear_system(A, b0)
+        x1 = numerical_mathematics.lu.solve_linear_system(A, b1)
+        self.assertTrue(np.all(np.isclose(x0, x_true_0)))
+        self.assertTrue(np.all(np.isclose(x1, x_true_1)))
 
     def test_8x8_matrix_0(self):
         A = np.array([[-1, 2, 3, 2, 5, 4, 3, -1],
@@ -54,6 +71,8 @@ class Gauss(unittest.TestCase):
                      dtype=np.float64)
         b = np.array([-11, 103, 53, -20, 95, 78, 131, -26], dtype=np.float64)
         x_true = np.linalg.solve(A, b)
+        x = numerical_mathematics.lu.solve_linear_system(A, b)
+        self.assertTrue(np.all(np.isclose(x, x_true)))
 
 
 if __name__ == '__main__':

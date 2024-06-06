@@ -30,11 +30,12 @@ def solve_linear_system(A, b):
 def lu_decomposition_without_pivoting(A):
     n = A.shape[0]
     L = np.eye(n)
+    U = np.copy(A)
     for i in range(n-1):
         for j in range(i+1, n):
-            L[j, i] = A[j, i] / A[i, i]
-            A[j] = A[j] - L[j, i] * A[i]
-    return L, A
+            L[j, i] = U[j, i] / U[i, i]
+            U[j] = U[j] - L[j, i] * U[i]
+    return L, U
 
 
 @input_check
