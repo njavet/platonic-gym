@@ -46,7 +46,11 @@ class Solver:
                 print(f'a = {aa}')
                 print(f'U[j] = {U[j]}')
                 print(f'u[j] - aa {U[j] - aa}')
-                U[j] = U[j] - L[j, i] * U[i]
+                bb = U[j] - aa
+                print(f'bb = {bb}')
+                #U[j] = U[j] - L[j, i] * U[i]
+                U[j] = bb
+                #U[j] = U[j] - aa
                 print(f'final U{j} = {U[j]}')
         return P, L, U
 
