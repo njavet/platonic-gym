@@ -77,11 +77,15 @@ class Gauss(unittest.TestCase):
         x_true = np.linalg.solve(A, b)
         x = numerical_mathematics.lu.solve_linear_system(A, b)
         x2 = numerical_mathematics.lu.Solver(A).solve(b)
-        print(x2)
-        print(x_true)
-        print(x)
-        #self.assertTrue(np.all(np.isclose(x2, x_true)))
+        self.assertTrue(np.all(np.isclose(x2, x_true)))
         self.assertTrue(np.all(np.isclose(x, x_true)))
+
+    def test_4x4_matrix(self):
+        A = np.array([[1, 2, 3, 4],
+                      [5, 6, 7, 8],
+                      [9, 10, 11, 12],
+                      [13, 14, 15, 16]], dtype=np.float64)
+        a = numerical_mathematics.lu.Solver(A)
 
 
 if __name__ == '__main__':

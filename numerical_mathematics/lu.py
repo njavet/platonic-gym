@@ -31,39 +31,13 @@ class Solver:
         P = np.eye(n)
         U = np.copy(A)
         for i in range(n-1):
-            print(f'before U = \n{U}')
             max_ind = np.argmax(np.abs(U[i:, i]))
             P[[i, max_ind + i]] = P[[max_ind + i, i]]
             U[[i, max_ind + i]] = U[[max_ind + i, i]]
-            print(f'after U = \n{U}')
+            L[[i, max_ind + i]] = L[[max_ind + i, i]]
             for j in range(i+1, n):
                 L[j, i] = U[j, i] / U[i, i]
-                print(f'fac = {L[j, i]}')
-                print(f'U{j} = {U[j]}')
-                print(f'U{i} = {U[i]}')
-                print(f'facU[i] = {L[j, i] * U[i]}')
-                aa = L[j, i] * U[i]
-                print(f'a = {aa}')
-                print(f'U[j] = {U[j]}')
-                print(f'u[j] - aa {U[j] - aa}')
-                bb = U[j] - aa
-                print(f'bb = {bb}')
-                #U[j] = U[j] - L[j, i] * U[i]
-                U[j] = bb
-                #U[j] = U[j] - aa
-                print(f'final U{j} = {U[j]}')
-                """
-                fac = 0.75
-U6 = [0 0 0 0 0 3 1 4]
-U5 = [ 0  0  0  0  0  4  2 -1]
-facU[i] = [ 0.    0.    0.    0.    0.    3.    1.5  -0.75]
-a = [ 0.    0.    0.    0.    0.    3.    1.5  -0.75]
-U[j] = [0 0 0 0 0 3 1 4]
-u[j] - aa [ 0.    0.    0.    0.    0.    0.   -0.5   4.75]
-bb = [ 0.    0.    0.    0.    0.    0.   -0.5   4.75]
-final U6 = [0 0 0 0 0 0 0 4]
-"""
-
+                U[j] = U[j] - L[j, i] * U[i]
         return P, L, U
 
     def solve(self, b):
