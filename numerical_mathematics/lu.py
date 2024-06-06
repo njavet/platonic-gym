@@ -21,6 +21,40 @@ def input_check(func):
     return check
 
 
+class Solver:
+    def __init__(self, A):
+        self.P, self.L, self.U = self.lu_dec_with_pivoting(A)
+
+    def lu_dec_with_pivoting(self, A):
+        n = A.shape[0]
+        L = np.eye(n)
+        P = np.eye(n)
+        U = np.copy(A)
+        for i in range(n-1):
+            print(f'before U = \n{U}')
+            max_ind = np.argmax(np.abs(U[i:, i]))
+            P[[i, max_ind + i]] = P[[max_ind + i, i]]
+            U[[i, max_ind + i]] = U[[max_ind + i, i]]
+            print(f'after U = \n{U}')
+            for j in range(i+1, n):
+                L[j, i] = U[j, i] / U[i, i]
+                print(f'fac = {L[j, i]}')
+                print(f'U{j} = {U[j]}')
+                print(f'U{i} = {U[i]}')
+                print(f'facU[i] = {L[j, i] * U[i]}')
+                aa = L[j, i] * U[i]
+                print(f'a = {aa}')
+                print(f'U[j] = {U[j]}')
+                print(f'u[j] - aa {U[j] - aa}')
+                U[j] = U[j] - L[j, i] * U[i]
+                print(f'final U{j} = {U[j]}')
+        return P, L, U
+
+    def solve(self, b):
+        y = forward_substitution(self.L, np.dot(self.P, b))
+        return backward_substitution(self.U, y)
+
+
 def solve_linear_system(A, b):
     L, U = lu_decomposition_without_pivoting(A)
     y = forward_substitution(L, b)
@@ -63,6 +97,4 @@ def backward_substitution(R, y):
     for i in range(n-1, -1, -1):
         x[i] = (y[i] - np.dot(x[i+1:], R[i, i+1:])) / R[i, i]
     return x
-
-
 

@@ -12,8 +12,10 @@ class Gauss(unittest.TestCase):
         b = np.array([29, 43, 20], dtype=np.float64)
         x_true = np.linalg.solve(A, b)
         x = numerical_mathematics.lu.solve_linear_system(A, b)
+        x2 = numerical_mathematics.lu.Solver(A).solve(b)
         # flops rounding errors
         self.assertTrue(np.all(np.isclose(x, x_true)))
+        self.assertTrue(np.all(np.isclose(x2, x_true)))
 
     def test_3x3_matrix_1(self):
         A = np.array([-1, 1, 1, 1, -3, -2, 5, 1, 4],
@@ -21,6 +23,8 @@ class Gauss(unittest.TestCase):
         b = np.array([0, 5, 3], dtype=np.float64)
         x_true = np.linalg.solve(A, b)
         x = numerical_mathematics.lu.solve_linear_system(A, b)
+        x2 = numerical_mathematics.lu.Solver(A).solve(b)
+        self.assertTrue(np.all(np.isclose(x2, x_true)))
         self.assertTrue(np.all(np.isclose(x, x_true)))
 
     def test_3x3_matrix_2(self):
@@ -72,6 +76,11 @@ class Gauss(unittest.TestCase):
         b = np.array([-11, 103, 53, -20, 95, 78, 131, -26], dtype=np.float64)
         x_true = np.linalg.solve(A, b)
         x = numerical_mathematics.lu.solve_linear_system(A, b)
+        x2 = numerical_mathematics.lu.Solver(A).solve(b)
+        print(x2)
+        print(x_true)
+        print(x)
+        #self.assertTrue(np.all(np.isclose(x2, x_true)))
         self.assertTrue(np.all(np.isclose(x, x_true)))
 
 
