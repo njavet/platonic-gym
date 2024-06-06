@@ -1,4 +1,5 @@
 import numpy as np
+import timeit
 from functools import wraps
 
 
@@ -87,4 +88,58 @@ def backward_substitution(R, y):
     for i in range(n-1, -1, -1):
         x[i] = (y[i] - np.dot(x[i+1:], R[i, i+1:])) / R[i, i]
     return x
+
+
+def matrix_check(func):
+    @wraps(func)
+    def check(A):
+        if not len(A.shape) == 2:
+            raise Exception('NOT A 2D array')
+        elif not A.shape[0] == A.shape[1]:
+            raise Exception('Not a square matrix')
+        else:
+            return func(A)
+    return check
+
+
+flo = {}
+
+def lu_decomposition_benchmark(A):
+    n = A.shape[0]
+    U = np.copy(A)
+    L = np.eye(n)
+    flops = 0
+    for i in range(n-1):
+        for j in range(i+1, n):
+            L[j, i] = U[j, i] / U[i, i]
+            flops += 1
+            tmp = L[j, i] * U[i]
+            flops += n
+            U[j] = U[j] - tmp
+            flops += n
+    if n in flo:
+        flo[n] += flops
+        flo[n] /= 2
+    else:
+        flo[n] = flops
+    return L, U
+
+
+def generate_permutation_matrix(n):
+    L = np.tril(np.random.rand(n, n) - 1) + np.eye(n)
+    U = np.triu(np.random.rand(n, n))
+    return np.dot(L, U)
+
+
+if __name__ == '__main__':
+    setup = "from __main__ import lu_decomposition_benchmark"
+
+    for n in [10, 100, 1000, 10000]:
+        A = generate_permutation_matrix(n)
+        args = {'A': A}
+        e_time = timeit.timeit(stmt="lu_decomposition_benchmark(A)",
+                               setup=setup,
+                               globals=args,
+                               number=1)
+        print(f'n = {n}, flops = {flo[n]}, {e_time:.4f} sec')
 
