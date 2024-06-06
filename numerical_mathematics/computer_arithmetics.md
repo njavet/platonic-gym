@@ -13,8 +13,25 @@ The set M of machine representable numbers to the Basis B is:
 
 M = {x ∈ ℝ | x = +/- 0.m1m2m3...mn * B ^ (+/- e1e2..el) ∪ {0}
 
+-> TODO ...
 
+### IEEE double precision:
+* 64bit numbers 
+* 1 sign bit 
+* 11 bits for e 
+* 52 bits for m
+* normalized with 1 before the point, plus 1 bit for the mantissa (hidden bit)
+* V = 1 means negative
+* bias = 127 bits to save the sign bit of exponent
 
+x = (-1)^V * (1.MMM...MMM) * 2^(E...E) - bias
+
+### Attributes
+* Machine numbers are not uniformly distributed
+* overflow -> inf
+* underflow -> 0
+* 1.0 + 1.1102230246251565e-16 == 1.0
+ 
 real numbers: <Ctrl>-v u211d
 natural numbers u2115
 numbers: u2124
