@@ -1,43 +1,64 @@
 # interpolate given datapoints
 import numpy as np
 import sympy as sp
+from scipy import integrate
 import matplotlib.pyplot as plt
 
 
-def lagrange_basis(xsym, i, x_points):
-    basis = 1
-    for j in range(len(x_points)):
-        if j != i:
-            basis *= (xsym - x_points[j]) / (x_points[i] - x_points[j])
-    return sp.simplify(basis)
+def integrate_poly(p):
+    ip = np.zeros(len(p) + 1)
+    for i, coef in enumerate(p):
+        deg = i+1
+        ip[deg] = (1 / deg) * coef
+    return ip
 
 
-def lagrange_interpolation_polynomial(x_points, y_points):
-    x = sp.symbols('x')
-    p = 0 
-    for i, (xi, yi) in enumerate(zip(x_points, y_points)):
-        p += lagrange_basis(x, i, x_points) * yi
-    p = sp.simplify(p)
-    return sp.lambdify(x, p, 'numpy')
+def middlepoint_sum(p, a, b, n):
+    h = (b - a) / n
+    for i in range(n):
+        xi = a + i*h
+        res += np.polyval(p, (xi + h/2))
+    return res * h
+
+
+def plot_sums(ax, p, a, b, n):
+    ax.grid()
+    ax.axvline(0, color='black', linewidth=2)
+    ax.axhline(0, color='black', linewidth=2)
+    xs = np.arange(0, 8, 0.01)
+    ys = np.polyval(p, xs)
+    ax.plot(xs, ys)
+
+    h = (b - a) / n
+    for i in range(n):
+        xi = a + i*h
+        fxi = np.polyval(p, xi + h/2)
+        # middle point plot
+        ax.scatter(xi + h/2, fxi, color='red', edgecolor='black', zorder=5)
+        ax.plot([xi +h/2, xi+h/2], [0, fxi], linestyle='--', color='gray')
+        # riemann bars
+        ax.plot([xi, xi], [0, fxi], linestyle='-', color='black')
+        ax.plot([xi, xi + h], [fxi, fxi], linestyle='-', color='black')
+        ax.plot([xi+h, xi+h], [0, fxi], linestyle='-', color='black')
+
+
 
 
 if __name__ == '__main__':
     x_points = np.array([1, 2.5, 3, 5, 13, 18, 20])
     y_points = np.array([2, 3, 4, 5, 7, 6, 3.])
-    p = lagrange_interpolation_polynomial(x_points, y_points)
+    p = np.polyfit(x_points, y_points, deg=6)
+    pi = integrate_poly(p)
+    # TODO find and correct mistake
+    print(f'true int', np.polyval(pi, 5) - np.polyval(pi, 0))
+    pi2 = np.polyint(p)
+    print(f'true int numpy', np.polyval(pi2, 5) - np.polyval(pi2, 0))
 
-    xs = np.arange(0, 21, 0.01)
-    ys = p(xs)
 
-    fig, ax = plt.subplots(figsize=(16, 16))
-    ax.grid()
-    ax.plot(xs, ys)
-    for xi, yi in zip(x_points, y_points):
-        ax.scatter(xi, yi, color='red', edgecolor='black', zorder=5)
-        ax.plot([xi, xi], [0, yi], linestyle='--', color='gray')
-
-    ax.axvline(0, color='black', linewidth=2)
-    ax.axhline(0, color='black', linewidth=2)
+    fig = plt.figure(figsize=(30, 20))
+    for i in range(1, 5):
+        ax = fig.add_subplot(2, 2, i)
+        plot_sums(ax, p, 0, 5, 2**i)
 
     plt.show()
 
