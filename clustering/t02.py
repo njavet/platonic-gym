@@ -2,6 +2,8 @@
 """
 clustering training
 what if a centroid never gets assigned any points ?
+ forgy method -> clustering depends on random centroids
+ will not change anymore due to sparse regions
 
 """
 
@@ -9,15 +11,13 @@ import numpy as np
 import matplotlib.pyplot as plt
 import operator
 import collections
-from sklearn.datasets import make_blobs, make_moons
-from sklearn.cluster import KMeans, DBSCAN
-from sklearn.metrics import silhouette_score
+from sklearn.datasets import make_blobs
 
 
-X, _ = make_blobs(n_samples=16,
+X, _ = make_blobs(n_samples=300,
                   n_features=2,
-                  cluster_std=0.6,
-                  centers=2,
+                  cluster_std=0.8,
+                  centers=4,
                   random_state=0x101)
 
 
@@ -31,10 +31,6 @@ centroids = X[indices]
 # plot
 fig = plt.figure(figsize=(28, 16))
 colors = ['cyan', 'purple', 'green', 'orange']
-#ax = fig.add_subplot(2, 4, 1)
-#ax.grid()
-#ax.scatter(X[:, 0], X[:, 1], label='data points')
-#ax.scatter(centroids[:, 0], centroids[:, 1], color='red', label='centroids')
 
 # dict for datapoint index to cluster number
 for n_iter in range(4):
