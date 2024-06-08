@@ -53,13 +53,16 @@ class SNN:
             for x, y in zip(inputs, targets):
                 # column vectors
                 part0 = 2 * (self.forward(x) - y)
-                tmp = self.beta0 + np.dot(self.omega0, x)
+                inner = self.beta0 + np.dot(self.omega0, x)
+                h1 = self.act(inner)
+                h1_der = self.der_act(inner)
+
                 # a simple float
                 self.beta1 -= alpha * part0
                 # d-in array
-                self.beta0 -= alpha * part0 * np.dot(self.omega1, self.der_act(tmp))
-                self.omega1 -= alpha * part0 * self.act(tmp)
-                part1 = np.dot(self.omega1, self.der_act(tmp))
+                self.beta0 -= alpha * part0 * np.dot(self.omega1, h1_der)
+                self.omega1 -= alpha * part0 * h1
+                part1 = np.dot(self.omega1, h1_der)
                 self.omega0 -= alpha * part0 * part1 * x
 
 
@@ -71,7 +74,8 @@ def relu_derivative(x):
     return (x > 0.).astype(float)
 
 
-if __name__ == '__main__':
+def main():
+    main()
     inputs = np.array([[0., 0.],
                        [0., 1.],
                        [1., 0.],
@@ -86,3 +90,7 @@ if __name__ == '__main__':
 
     snn.fit(inputs, targets)
     print(snn.predict(inputs))
+
+
+if __name__ == '__main__':
+    main()
