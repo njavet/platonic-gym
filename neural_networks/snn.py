@@ -4,6 +4,7 @@ understanding deep learning book, shallow neural networks implementation
 """
 from typing import Callable
 import numpy as np
+import sympy as sp
 
 
 class Neuron:
@@ -82,8 +83,8 @@ class SNN:
     def compute_grad_omega0(self, pred, x, y):
         grad_o0 = np.zeros_like(self.omega0)
         for i, w in self.omega0:
-            pass
-            # grad_o0[i] = 2 * (pred - y) *
+            tmp = self.beta0[i] + np.dot()
+            grad_o0[i] = 2 * (pred - y) * self.der_act(tmp)
 
     def compute_grad_omega1(self, pred, x, y):
         grad_o1 = np.zeros_like(self.omega1)
