@@ -5,6 +5,7 @@ kmeans image compression
 from sklearn.cluster import KMeans
 from sklearn.metrics import silhouette_score
 from sklearn.metrics import pairwise_distances_argmin
+import operator
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -60,7 +61,7 @@ def rg_chromaticity(color_arr: np.array) ->  np.array:
     return normed
 
 
-def rg_chroma_plot(img_arr: np.array, centers: Optional[np.array] = None):
+def rg_chroma_plot(ax, img_arr: np.array, centers: Optional[np.array] = None):
     """
     plot an image in rg-chromaticity space
     this is a 2D representation of 3D rgb data
@@ -75,15 +76,14 @@ def rg_chroma_plot(img_arr: np.array, centers: Optional[np.array] = None):
     colors = np.copy(img_arr).reshape((-1, 3))
     colors = np.unique(colors, axis=0)
     img_rg = rg_chromaticity(colors)
-    plt.scatter(img_rg[:, 0], img_rg[:, 1], c=[tuple(colors[i]) for i in range(colors.shape[0])], s=.1)
+    ax.scatter(img_rg[:, 0], img_rg[:, 1], c=[tuple(colors[i]) for i in range(colors.shape[0])], s=.1)
 
     if centers is not None:
         crg = rg_chromaticity(centers)
-        plt.scatter(crg[:, 0], crg[:, 1], c='black', marker='x', s=25.)
+        ax.scatter(crg[:, 0], crg[:, 1], c='black', marker='x', s=25.)
 
-    plt.xlabel('red')
-    plt.ylabel('green')
-    plt.show()
+    ax.set_xlabel('red')
+    ax.set_ylabel('green')
 
 
 def replace_nearest_color(img_arr: np.array, centers: np.array):
@@ -109,32 +109,59 @@ def main():
 
     fig = plt.figure(figsize=(32, 16))
     # visualize the np.array version of the same image
-    ax = fig.add_subplot(221)
-    ax.set_title('Original Image')
-    ax.imshow(img_arr)
     pixels = img_arr.reshape(-1, 3)
     # rg_chroma_plot(img_arr)
 
     elbow = []
-    for k in range(2, 17):
+    scs = []
+    for k in range(2, 9):
         km = KMeans(n_clusters=k)
         labels = km.fit_predict(pixels)
+        sc = silhouette_score(pixels, labels)
+        print(f'silhouette score for {k} = {sc}')
+        scs.append((k, sc))
         elbow.append((k, km.inertia_))
 
-    ax = fig.add_subplot(222)
+    ax = fig.add_subplot(231)
     xs, ys = zip(*elbow)
-    ax.plot(xs, ys, label='elbow')
+    ax.set_title('Elbow Plot')
+    ax.set_xlabel('Number of clusters')
+    ax.set_ylabel('sum of squared distance of point to closest centroid')
+    ax.grid()
+    ax.plot(xs, ys, label='elbow', marker='x')
+
+    ax = fig.add_subplot(232)
+    xs, ys = zip(*scs)
+    ax.set_title('Silhouette Plot')
+    ax.set_xlabel('Number of clusters')
+    ax.set_ylabel('Silhouette Score')
+    ax.grid()
+    ax.plot(xs, ys, label='silhouette', marker='x')
+
+    k, _ = sorted(scs, key=operator.itemgetter(1), reverse=True)[0]
+    km = KMeans(n_clusters=k)
+    labels = km.fit_predict(pixels)
+
     # generate 8 random colors for illustration
     # random_centers = np.random.default_rng(0x101).random(size=(8, 3))
 
     # plot the random centers on top of the colors of the image
-    # rg_chroma_plot(img_arr, random_centers)
-
+    ax = fig.add_subplot(233)
+    ax.set_title('Chroma plot')
+    rg_chroma_plot(ax, img_arr, km.cluster_centers_)
+    
     # replace original colors by their nearest neighbors out of the candidate centers
-    # replaced = replace_nearest_color(img_arr, random_centers)
+    ax = fig.add_subplot(234)
+    ax.set_title('Original Image')
+    ax.imshow(img_arr)
+
+    ax = fig.add_subplot(235)
+    ax.set_title('Compressed image')
+    replaced = replace_nearest_color(img_arr, km.cluster_centers_)
 
     # convert to PIL.Image and visualize
-    # plt.imshow(arr2img(replaced))
+
+    ax.imshow(arr2img(replaced))
     plt.show()
 
 
