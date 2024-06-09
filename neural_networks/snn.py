@@ -74,22 +74,24 @@ def relu_derivative(x):
     return (x > 0.).astype(float)
 
 
-def main():
-    main()
+def xor_classifier():
     inputs = np.array([[0., 0.],
                        [0., 1.],
                        [1., 0.],
                        [1., 1.]])
     targets = np.array([0., 1., 1., 0.])
-
     snn = SNN(d_layer=3,
               d_in=2,
               d_out=1,
               act=relu,
               der_act=relu_derivative)
-
     snn.fit(inputs, targets)
     print(snn.predict(inputs))
+
+
+def main():
+    pass
+
 
 
 if __name__ == '__main__':
