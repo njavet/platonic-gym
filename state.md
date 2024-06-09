@@ -10,3 +10,7 @@
  
 how to design loss functions (RSS for regression, log loss for classification)
 
+
+## TODO
+backpropagation calculation with a single neuron multilayer 
+
