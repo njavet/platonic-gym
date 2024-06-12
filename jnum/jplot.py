@@ -50,11 +50,5 @@ def plot_func_integral(f, a, b, ax=None):
     plt.show()
 
 
-
-def f(x):
-    return 6*x**2 - 2*x
-
-plot_func_integral(f, 0, 4)
-
-
-
+def plot_cubic_spline():
+    pass

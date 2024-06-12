@@ -12,6 +12,14 @@ class CubicSpline:
         self.c = np.zeros((4, self.n))
         self.compute_coefficients()
 
+    def __call__(self, x):
+        for i in range(self.n):
+            if self.x_points[i] <= x <= self.x_points[i + 1]:
+                y = np.ones(self.n + 1)
+                for j in range(self.n, 0, -1):
+                    y[j] = (x - self.x_points[i]) ** j
+                return np.dot(self.c[:, i], y)
+
     def compute_cy_i(self, i):
         tmp0 = 3 * (self.y_points[i+1] - self.y_points[i]) / self.h[i]
         tmp1 = 3 * (self.y_points[i] - self.y_points[i-1]) / self.h[i-1]
@@ -58,6 +66,8 @@ x = np.array([4, 6, 8, 10])
 y = np.array([6, 3, 9, 0])
 cs0 = CS(x, y, bc_type='natural')
 print(cs0.c)
+print(cs0(5))
 
 cs = CubicSpline(x, y)
 print(cs.c)
+print(cs(5))
