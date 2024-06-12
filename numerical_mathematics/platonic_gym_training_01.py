@@ -15,6 +15,7 @@ def integrate_poly(p):
 
 def middlepoint_sum(p, a, b, n):
     h = (b - a) / n
+    res = 0
     for i in range(n):
         xi = a + i*h
         res += np.polyval(p, (xi + h/2))

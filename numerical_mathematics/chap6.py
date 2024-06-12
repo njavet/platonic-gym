@@ -57,11 +57,14 @@ class LagrangePoly:
     
 
 
-xs = np.array([8., 10., 12., 14.])
-ys = np.array([11.2, 13.4, 15.3, 19.5])
-lp = LagrangePoly(xs, ys)
-sp.pprint(lp.sp_poly)
-print(lp.sp_vector)
-print(lp.f_poly(11))
-print(lp.eval_poly(11))
+# spline
+
+if __name__ == '__main__':
+    xs_0 = np.array([8., 10., 12., 14.])
+    ys_0 = np.array([11.2, 13.4, 15.3, 19.5])
+
+
+    xs_1 = np.array([1, 2.5, 3, 5, 13, 18, 20])
+    ys_1 = np.array([2, 3, 4, 5, 7, 6, 3.])
+
 
