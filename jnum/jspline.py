@@ -1,5 +1,5 @@
 import numpy as np
-from scipy.interpolate import CubicSpline as CS
+from scipy.interpolate import CubicSpline
 import matplotlib.pyplot as plt
 
 
@@ -80,10 +80,9 @@ class NaturalCubicSpline:
         xs = np.arange(xmin, xmax, 0.01)
         ys = [self.eval_at_x(xi) for xi in xs]
         plt.scatter(self.x_points, self.y_points, color='red', label='datapoints')
-        cs2 = CS(self.x_points, self.y_points, bc_type='natural')
+        cs_ref = CubicSpline(self.x_points, self.y_points, bc_type='natural')
         plt.plot(xs, ys, color='blue', label='spline')
-        plt.plot(xs, cs2(xs), color='cyan', label='scipy spline')
+        plt.plot(xs, cs_ref(xs), color='cyan', label='scipy spline')
         plt.legend()
         plt.show()
-        
         

@@ -47,21 +47,12 @@ def sum_simpson(f, a, b, h=1):
 def romberg(f, a, b, m):
     T = {}
     for j in range(m+1):
-        T[j, 0] = sum_trapezoid(f, a, b, 2**j)
+        T[j, 0] = sum_trapezoid(f, a, b, 1/2**j)
 
     for k in range(1, m+1):
         for j in range(0, m+1-k):
             T[j, k] = ((4**k) * T[j+1, k-1] - T[j, k-1]) / (4**k - 1)
 
-    return T
-
-
-T = romberg(lambda x: 6*x**2 - 2*x, 0, 4, 2)
-for k, v in T.items():
-    print(f'k = {k}, v = {v}')
-
-
-print(sum_simpson(lambda x: 6*x**2 - 2*x, 0, 4, 8))
-print(sum_simpson(lambda x: 6*x**2 - 2*x, 0, 4, 10))
+    return T[0, m]
 
 

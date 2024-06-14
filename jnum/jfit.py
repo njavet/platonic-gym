@@ -1,11 +1,4 @@
 import numpy as np
-from scipy.interpolate import CubicSpline as CS
-import sympy as sp
-import matplotlib.pyplot as plt
-
-def solve_normal_system(A, y):
-    Q, R = np.linalg.qr(A)
-    return np.linalg.solve(R, np.dot(Q.T, y))
 
 
 def gauss_newton(g, Dg, lam0, max_iter=8, eps=1e-4):
@@ -24,10 +17,7 @@ def gauss_newton(g, Dg, lam0, max_iter=8, eps=1e-4):
     return lam, i
 
 
-def gauss_newton_d(g, Dg, lam0, max_iter=32, eps=1e-5, pmax=5, damped=True):
-    if not damped:
-        return gauss_newton(g, Dg, lam0, max_iter, eps)
-
+def gauss_newton_d(g, Dg, lam0, max_iter=32, eps=1e-5, pmax=4):
     i = 0
     lam = np.copy(lam0)
     increment = eps + 1
@@ -48,9 +38,9 @@ def gauss_newton_d(g, Dg, lam0, max_iter=32, eps=1e-5, pmax=5, damped=True):
         err_func = np.linalg.norm(g(lam)) ** 2
         increment = np.linalg.norm(delta)
         i += 1
-        #print('iteration = ', i)
-        #print('lambda = ', lam)
-        #print('increment = ', increment)
-        #print('error functional = ', err_func)
+        # print('iteration = ', i)
+        # print('lambda = ', lam)
+        # print('increment = ', increment)
+        # print('error functional = ', err_func)
 
     return lam, i
