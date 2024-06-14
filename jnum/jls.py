@@ -1,4 +1,3 @@
-import numpy as np
 import timeit
 from functools import wraps
 

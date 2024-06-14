@@ -1,5 +1,4 @@
 import numpy as np
-import sympy as sp
 
 
 def sum_midpoint(f, a, b, h=1):
