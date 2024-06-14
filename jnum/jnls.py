@@ -36,7 +36,7 @@ def newton(f, df, x0, max_iter=32, eps=1e-5, termcond='iter'):
         if termcond == 'xdiff' and cond0:
             print('cond0 reached, xn = ', xn)
             return xn
-        if termcond == 'xdiff' and cond1:
+        if termcond == 'xdiff1' and cond1:
             print('cond1 reached, xn = ', xn)
             return xn
         if termcond == 'fnorm' and cond2:
@@ -47,7 +47,7 @@ def newton(f, df, x0, max_iter=32, eps=1e-5, termcond='iter'):
     return x0_
 
 
-def newton_d(f, df, x0, max_iter=32, kmax=4):
+def newton_d(f, df, x0, max_iter=32, kmax=4, eps=1e-5, termcond='iter'):
     x0_ = np.copy(x0)
 
     for i in range(max_iter):
@@ -62,6 +62,21 @@ def newton_d(f, df, x0, max_iter=32, kmax=4):
             if np.linalg.norm(f(xd), 2) <= fnorm:
                 xn = xd
                 break
+
+        xdiff_norm = np.linalg.norm(xn - x0_)
+        cond0 = xdiff_norm <= np.linalg.norm(xn) * eps
+        cond1 = xdiff_norm <= eps
+        cond2 = np.linalg.norm(f(xn)) <= eps
+        if termcond == 'xdiff' and cond0:
+            print('cond0 reached, xn = ', xn)
+            return xn
+        if termcond == 'xdiff1' and cond1:
+            print('cond1 reached, xn = ', xn)
+            return xn
+        if termcond == 'fnorm' and cond2:
+            print('cond2 reached, xn = ', xn)
+            return xn
         x0_ = xn
+
     return x0_
 
