@@ -57,9 +57,9 @@ def newton_d(f, df, x0, max_iter=32, kmax=4, eps=1e-5, termcond='iter'):
         fnorm = np.linalg.norm(f(x0_), 2)
         # if no k will be found
         xn = x0_ + d0
-        for k in range(1, kmax+1):
+        for k in range(kmax+1):
             xd = x0_ + d0 / (2**k)
-            if np.linalg.norm(f(xd), 2) <= fnorm:
+            if np.linalg.norm(f(xd), 2) < fnorm:
                 xn = xd
                 break
 

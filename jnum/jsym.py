@@ -47,3 +47,8 @@ xd = x - x0.reshape(-1, 1)
 g = fx0_4 + np.dot(df0, xd)
 
 
+import jnls
+xn = jnls.newton_d(fl2, Dfl, x0, max_iter=100, termcond='fnorm')
+print(xn)
+xn = jnls.newton(fl2, Dfl, x0, max_iter=100, termcond='fnorm')
+print(xn)
