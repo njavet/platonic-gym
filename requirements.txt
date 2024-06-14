@@ -5,3 +5,6 @@ pandas
 seaborn
 scikit-learn
 sympy
+mplcyberpunk
+scipy
+
