@@ -52,16 +52,19 @@ def newton_d(f, df, x0, max_iter=32, kmax=4, eps=1e-5, termcond='iter'):
 
     for i in range(max_iter):
         print(f'x{i} = {x0_}')
-        d0 = np.linalg.solve(df(x0_), -f(x0_)).flatten()
+        delta = np.linalg.solve(df(x0_), -f(x0_)).flatten()
 
         fnorm = np.linalg.norm(f(x0_), 2)
         # if no k will be found
-        xn = x0_ + d0
-        for k in range(kmax+1):
-            xd = x0_ + d0 / (2**k)
-            if np.linalg.norm(f(xd), 2) < fnorm:
-                xn = xd
-                break
+        d0 = np.copy(delta)
+        xn = x0_ + delta
+        k = 0
+        while k <= kmax and np.linalg.norm(f(xn), 2) < fnorm:
+            delta /= 2
+            xn = x0_ + delta
+            k += 1
+        if k > kmax:
+            xn = x0_ + d0
 
         xdiff_norm = np.linalg.norm(xn - x0_)
         cond0 = xdiff_norm <= np.linalg.norm(xn) * eps
