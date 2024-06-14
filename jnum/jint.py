@@ -4,44 +4,53 @@ import sympy as sp
 
 def sum_midpoint(f, a, b, h=1):
     n = int((b - a) / h)
-    
-    res = 0
+    x = np.zeros(n + 1)
+    y = np.zeros(n)
+    x[0] = a
+
+    num_int = 0
     for i in range(n):
-        res += f(a + i*h + h/2)
-    return h * res
+        y[i] = (x[i] + (h/2))
+        x[i + 1] = x[i] + h
+        num_int += y[i]
+    return h * num_int, x, y
 
 
-def trapezoid_points(f, a, b, h):
-    n = int((b - a) / h)
-    tmp = (f(a) + f(b) / 2)
-    for i in range(1, n):
-        xi = a + i*h
-        tmp += f(xi)
-
-        
 def sum_trapezoid(f, a, b, h=1):
     n = int((b - a) / h)
+    x = np.zeros(n + 1)
+    y = np.zeros(n + 1)
+    x[0] = a
+    y[0] = f(a)
+    y[-1] = f(b)
 
-    tmp = (f(a) + f(b) / 2)
+    num_int = (y[0] + y[-1]) / 2
     for i in range(1, n):
-        xi = a + i*h
-        tmp += f(xi)
-    return h * tmp
+        x[i] = x[i-1] + h
+        y[i] = f(x[i])
+        num_int += y[i]
+    return h * num_int, x, y
 
 
 def sum_simpson(f, a, b, h=1):
     n = int((b - a) / h)
+    x = np.zeros(n + 1)
+    y = np.zeros(n + 1)
+    x[0] = a
+    x[-1] = b
+    x[-2] = b - h
+    y[0] = f(a)
+    y[-1] = f(b)
 
-    res = 0.5*f(a) + 0.5*f(b)
-
+    num_int = 0.5 * (y[0] + y[-1])
     for i in range(1, n):
-        res += f(a + i*h)
+        x[i] = x[i-1] + h
+        num_int += f(x[i])
 
     for i in range(1, n+1):
-        x0 = a + (i-1)*h
-        xi = a + i*h
-        res += 2*f((x0 + xi) / 2)
-    return (h/3) * res
+        num_int += 2*f((x[i-1] + x[i]) / 2)
+
+    return (h/3) * num_int, x, y
 
 
 def romberg(f, a, b, m):
@@ -52,7 +61,6 @@ def romberg(f, a, b, m):
     for k in range(1, m+1):
         for j in range(0, m+1-k):
             T[j, k] = ((4**k) * T[j+1, k-1] - T[j, k-1]) / (4**k - 1)
-
     return T[0, m]
 
 
