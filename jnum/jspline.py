@@ -56,19 +56,20 @@ class NaturalCubicSpline:
     def compute_coefficients(self):
         self.c[3] = self.y_points[:-1]
 
-        mat = np.zeros((self.n - 1, self.n - 1))
-        mat[0][0:2] = np.array([2*(self.h[0] + self.h[1]), self.h[1]])
-        mat[-1][-3:] = np.array([self.h[-1], 2*(self.h[-1] + self.h[-2])])
-
-        cx = np.zeros(self.n - 1)
-        cx[0] = self.compute_cy_i(1)
-        cx[1] = self.compute_cy_i(2)
-        for i in range(2, self.n-1):
-            mat[i, i-1] = self.h[i-1]
-            mat[i, i] = 2 * (self.h[i-1] + self.h[i])
-            mat[i, i+1] = self.h[i]
-            cx[i] = self.compute_cy_i(i-1)
-        self.c[1][1:] = np.linalg.solve(mat, cx)
+        if self.n == 2:
+            self.c[1][1] = self.compute_cy_i(1) / (2*(self.h[0] + self.h[1]))
+        else:
+            mat = np.zeros((self.n - 1, self.n - 1))
+            mat[0][0:2] = np.array([2*(self.h[0] + self.h[1]), self.h[1]])
+            mat[-1][-2:] = np.array([self.h[-1], 2*(self.h[-1] + self.h[-2])])
+            cx = np.zeros(self.n - 1)
+            cx[0] = self.compute_cy_i(1)
+            for i in range(1, self.n-2):
+                mat[i, i-1] = self.h[i-1]
+                mat[i, i] = 2 * (self.h[i-1] + self.h[i])
+                mat[i, i+1] = self.h[i]
+                cx[i] = self.compute_cy_i(i+1)
+            self.c[1][1:] = np.linalg.solve(mat, cx)
 
         for i in range(self.n):
             self.c[2][i] = self.compute_b_i(i)
@@ -86,3 +87,32 @@ class NaturalCubicSpline:
         plt.legend()
         plt.show()
         
+
+if __name__ == '__main__':
+    t = np.array([1900.,
+                  1910.,
+                  1920.,
+                  1930.,
+                  1940.,
+                  1950.,
+                  1960.,
+                  1970.,
+                  1980.,
+                  1990.,
+                  2000])
+
+    pt = np.array([75.995,
+                   91.972,
+                   105.711,
+                   123.203,
+                   131.669,
+                   150.697,
+                   179.323,
+                   203.212,
+                   226.505,
+                   249.633,
+                   281.422])
+
+    ncs = NaturalCubicSpline(t, pt)
+    ncs.plot_spline()
+
