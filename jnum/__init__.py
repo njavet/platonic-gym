@@ -14,9 +14,12 @@ from .num_integration import romberg
 
 from .splines import NaturalCubicSpline
 
-from ode import euler
-from ode import midpoint
-from ode import modeuler
-from ode import runge_kutta_k4
+from .ode import euler
+from .ode import midpoint
+from .ode import modeuler
+from .ode import runge_kutta_k4
+from .ode import runge_kutta_k4_dn
+from .ode import runge_kutta_s
+from .ode import general_runge_kutta
 
 
