@@ -2,7 +2,7 @@
 ## Infinity
 The set of real numbers is infinite, uncountable, and therefore it is 
 impossible to represent all numbers on a finite machine (humans would 
-also count as finite machine in my opinion, since I never saw somebody 
+also count as finite machines in my opinion, since I never saw somebody 
 computing with "real" real numbers).
 For a Basis B ∈ ℕ with B > 1 we can express any real number x ∈ ℝ like this:
 

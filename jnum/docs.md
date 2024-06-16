@@ -7,6 +7,6 @@ np.linspace(a, b, endpoint=True)
 * newton for systems 
 * damped newton 
 * lagrange
-* natural cubic spline
+* natural cubic splines
 
 TODO
